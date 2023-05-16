@@ -1,0 +1,70 @@
+﻿function (parser_text)
+    cmake_parse_arguments (PARSE_ARGV 0 "_TEXT" "BOLD" "COLOR" "" )
+    set ( _TEXT_OPTIONS -E cmake_echo_color --no-newline )
+
+    if (_TEXT_COLOR)
+        string ( TOLOWER "${_TEXT_COLOR}" _TEXT_COLOR_LOWER )
+        if ( NOT ${_TEXT_COLOR_LOWER} MATCHES "^normal|black|red|green|yellow|blue|magenta|cyan|white" )
+            message("this color is not supportted")
+        else ()
+            list (APPEND _TEXT_OPTIONS --${_TEXT_COLOR_LOWER})
+        endif ()
+    endif ()
+
+    if (_TEXT_BOLD)
+        list ( APPEND _TEXT_OPTIONS --bold )
+    endif ()
+
+    execute_process ( COMMAND ${CMAKE_COMMAND} -E env CLICOLOR_FORCE=1 ${CMAKE_COMMAND} ${_TEXT_OPTIONS} ${_TEXT_UNPARSED_ARGUMENTS}
+                      OUTPUT_VARIABLE _TEXT_RESULT
+                      ECHO_ERROR_VARIABLE
+                      )
+    set ( TEXT_RESULT ${_TEXT_RESULT} PARENT_SCOPE )
+endfunction ()
+
+
+function ( print )
+    parser_text ( ${ARGN} )
+    message ( ${TEXT_RESULT} )
+endfunction ()
+
+function(konwledge_color_message)
+    cmake_parse_arguments (PARSE_ARGV 0 "_TEXT" "BOLD" "COLOR" "" )
+endfunction()
+
+#print ( COLOR NORMAL TEST_NORMAL )
+
+#print ( COLOR BLACK TEST_BLACK )
+#print ( BOLD COLOR BLACK TEST_BLACK_BOLD )
+#print ( COLOR RED TEST_RED )
+#print ( BOLD COLOR RED TEST_RED_BOLD )
+#print ( COLOR GREEN TEST_GREEN )
+#print ( BOLD COLOR GREEN TEST_GREEN_BOLD )
+#print ( COLOR YELLOW TEST_YELLOW )
+#print ( BOLD COLOR YELLOW TEST_YELLOW_BOLD )
+#print ( COLOR BLUE TEST_BLUE )
+#print ( BOLD COLOR BLUE TEST_BLUE_BOLD )
+#print ( COLOR MAGENTA TEST_MAGENTA )
+#print ( BOLD COLOR MAGENTA TEST_MAGENTA_BOLD )
+#print ( COLOR CYAN TEST_CYAN )
+#print ( BOLD COLOR CYAN TEST_CYAN_BOLD )
+#print ( COLOR WHITE TEST_WHITE )
+#print ( BOLD COLOR WHITE TEST_WHITE_BOLD )
+
+#function(my_function2 FunctionTarget)
+#    set(options ENABLE_PRINT EANBLE_SHOW)
+#    set(oneValueArgs PRINT_VALUE)
+#    set(multiValueArgs SUB_VALUES DEFUALT_VALUES)
+#    message(STATUS "function target:${FunctionTarget}")
+#    cmake_parse_arguments(FUNC "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+#    message(STATUS "ENABLE_PRINT:${FUNC_ENABLE_PRINT}")
+#    message(STATUS "ENABLE_SHOW:${FUNC_EANBLE_SHOW}")
+#    message(STATUS "PRINT_VALUE:${FUNC_PRINT_VALUE}")
+#    foreach(sub ${FUNC_SUB_VALUES})
+#        message(STATUS "sub value:${sub}")
+#    endforeach()
+#    foreach(default ${FUNC_DEFUALT_VALUES})
+#        message(STATUS "default value:${default}")
+#    endforeach()
+#endfunction(my_function2 FunctionTarget)
+
